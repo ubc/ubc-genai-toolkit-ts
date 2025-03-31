@@ -1,0 +1,16 @@
+# No node_modules
+node_modules
+
+# Don't commit the lock file
+package-lock.json
+
+# No cursor files
+.cursor/*
+.cursor/
+
+# No env files
+.env
+**/.env
+
+# No dist files
+**/dist/

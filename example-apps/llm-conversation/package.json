@@ -1,0 +1,23 @@
+{
+  "name": "llm-conversation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "readline-sync": "^1.4.10"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.13",
+    "@types/readline-sync": "^1.4.8",
+    "typescript": "^5.8.2"
+  }
+}

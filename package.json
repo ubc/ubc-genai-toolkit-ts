@@ -1,0 +1,17 @@
+{
+  "name": "ubc-genai-toolkit-ts",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "modules/*",
+    "example-apps/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces",
+    "clean": "npm run clean --workspaces",
+    "start:llm-convo": "npm run start --workspace=llm-conversation"
+  },
+  "license": "GPL-3.0"
+}
