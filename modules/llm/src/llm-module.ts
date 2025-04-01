@@ -13,6 +13,7 @@ import {
 import { Provider } from './providers/provider-interface';
 import { OpenAIProvider } from './providers/openai-provider';
 import { OllamaProvider } from './providers/ollama-provider';
+import { AnthropicProvider } from './providers/anthropic-provider';
 import { ConversationImpl } from './conversation';
 import { Conversation, ConversationFactory } from './conversation-interface';
 
@@ -122,6 +123,11 @@ export class LLMModule implements ConversationFactory {
 	private initializeProvider(): Provider {
 		const { provider, apiKey, endpoint, defaultModel, logger } = this.config;
 
+		// Ensure logger is defined for providers
+		if (!logger) {
+			throw new ConfigurationError('Logger is required but was not provided in config');
+		}
+
 		switch (provider) {
 			case 'openai':
 				if (!apiKey) {
@@ -134,15 +140,22 @@ export class LLMModule implements ConversationFactory {
 						'defaultModel is required for OpenAI provider'
 					);
 				}
-				return new OpenAIProvider(apiKey, defaultModel, logger!, {
+				return new OpenAIProvider(apiKey, defaultModel, logger, {
 					endpoint,
 				});
 
 			case 'anthropic':
-				// For Phase 1, only implement OpenAI
-				throw new ConfigurationError(
-					'Anthropic provider not implemented yet'
-				);
+				if (!apiKey) {
+					throw new ConfigurationError(
+						'API key is required for Anthropic provider'
+					);
+				}
+				if (!defaultModel) {
+					throw new ConfigurationError(
+						'defaultModel is required for Anthropic provider'
+					);
+				}
+				return new AnthropicProvider(apiKey, defaultModel, logger);
 
 			case 'ollama':
 				if (!endpoint) {
@@ -155,12 +168,24 @@ export class LLMModule implements ConversationFactory {
 						'defaultModel is required for Ollama provider'
 					);
 				}
-				return new OllamaProvider(endpoint, defaultModel, logger!);
+				return new OllamaProvider(endpoint, defaultModel, logger);
 
 			default:
-				throw new ConfigurationError(
-					`Unsupported provider: ${provider}`
-				);
+				// Consider if we want a way to register custom providers?
+				// For now, treat unknown provider string as an error.
+				if (typeof provider === 'string') {
+					throw new ConfigurationError(
+						`Unsupported built-in provider: ${provider}`
+					);
+				} else {
+					// If provider is not a string (e.g., a custom object),
+					// potentially handle it differently or throw error.
+					// Re-evaluating this logic based on how custom providers might work.
+					// For now, assume provider is a string type from config.
+					throw new ConfigurationError(
+						`Invalid provider configuration.`
+					);
+				}
 		}
 	}
 
