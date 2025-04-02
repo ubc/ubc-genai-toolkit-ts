@@ -14,6 +14,7 @@ import { Provider } from './providers/provider-interface';
 import { OpenAIProvider } from './providers/openai-provider';
 import { OllamaProvider } from './providers/ollama-provider';
 import { AnthropicProvider } from './providers/anthropic-provider';
+import { UbcLlmSandboxProvider } from './providers/ubc-llm-sandbox-provider';
 import { ConversationImpl } from './conversation';
 import { Conversation, ConversationFactory } from './conversation-interface';
 
@@ -169,6 +170,24 @@ export class LLMModule implements ConversationFactory {
 					);
 				}
 				return new OllamaProvider(endpoint, defaultModel, logger);
+
+			case 'ubc-llm-sandbox':
+				if (!apiKey) {
+					throw new ConfigurationError(
+						'apiKey is required for UBC LLM Sandbox provider'
+					);
+				}
+				if (!endpoint) {
+					throw new ConfigurationError(
+						'endpoint is required for UBC LLM Sandbox provider'
+					);
+				}
+				if (!defaultModel) {
+					throw new ConfigurationError(
+						'defaultModel is required for UBC LLM Sandbox provider'
+					);
+				}
+				return new UbcLlmSandboxProvider(apiKey, endpoint, defaultModel, logger);
 
 			default:
 				// Consider if we want a way to register custom providers?

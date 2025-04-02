@@ -3,7 +3,7 @@ import { ModuleConfig } from '@ubc-genai-toolkit/core';
 /**
  * LLM provider types
  */
-export type ProviderType = 'openai' | 'anthropic' | 'ollama';
+export type ProviderType = 'openai' | 'anthropic' | 'ollama' | 'ubc-llm-sandbox';
 
 /**
  * LLM configuration
