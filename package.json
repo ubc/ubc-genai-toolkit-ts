@@ -7,11 +7,13 @@
     "example-apps/*"
   ],
   "scripts": {
-    "build": "npm run build --workspaces",
+    "build": "npm run build --workspace=@ubc-genai-toolkit/core && npm run build --workspace=@ubc-genai-toolkit/llm && npm run build --workspace=@ubc-genai-toolkit/embeddings && npm run build --workspace=@ubc-genai-toolkit/rag && npm run build --workspace=llm-conversation && npm run build --workspace=embedding-cli && npm run build --workspace=rag-app",
     "test": "npm run test --workspaces",
     "lint": "npm run lint --workspaces",
     "clean": "npm run clean --workspaces",
-    "start:llm-convo": "npm run start --workspace=llm-conversation"
+    "start:llm-convo": "npm run start --workspace=llm-conversation",
+    "start:embedding-cli": "npm run start --workspace=embedding-cli",
+    "start:rag-app": "npm run start --workspace=rag-app"
   },
   "license": "GPL-3.0"
 }

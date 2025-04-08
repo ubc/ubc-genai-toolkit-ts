@@ -1,4 +1,10 @@
-import { LLMOptions, LLMResponse, Message } from '../types';
+import {
+	LLMOptions,
+	LLMResponse,
+	Message,
+	EmbeddingOptions,
+	EmbeddingResponse,
+} from '../types';
 
 /**
  * Common interface for all LLM providers
@@ -35,4 +41,14 @@ export interface Provider {
 	 * Get the available models for this provider
 	 */
 	getAvailableModels(): Promise<string[]>;
+
+	/**
+	 * Generate embeddings for a list of text strings (optional method).
+	 *
+	 * Providers that do not support embeddings should throw a ToolkitError.
+	 */
+	embed?(
+		texts: string[],
+		options?: EmbeddingOptions
+	): Promise<EmbeddingResponse>;
 }

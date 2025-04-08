@@ -2,6 +2,7 @@ import {
 	LoggerInterface,
 	ConfigurationError,
 	mergeWithDefaults,
+	APIError,
 } from '@ubc-genai-toolkit/core';
 import {
 	LLMConfig,
@@ -9,6 +10,8 @@ import {
 	LLMResponse,
 	Message,
 	ProviderType,
+	EmbeddingOptions,
+	EmbeddingResponse,
 } from './types';
 import { Provider } from './providers/provider-interface';
 import { OpenAIProvider } from './providers/openai-provider';
@@ -98,6 +101,38 @@ export class LLMModule implements ConversationFactory {
 	}
 
 	/**
+	 * Generate embeddings for a list of text strings.
+	 *
+	 * This method delegates to the configured provider's embed method.
+	 * Throws an error if the provider does not support embeddings.
+	 *
+	 * @param texts - An array of strings to embed.
+	 * @param options - Optional configuration for the embedding request (e.g., model).
+	 * @returns A promise resolving to the EmbeddingResponse.
+	 */
+	async embed(
+		texts: string[],
+		options?: EmbeddingOptions
+	): Promise<EmbeddingResponse> {
+		this.logger.debug('Generating embeddings', {
+			provider: this.config.provider,
+			model: options?.model || this.config.embeddingModel,
+			textCount: texts.length,
+		});
+
+		if (!this.provider.embed) {
+			throw new APIError(
+				`The configured provider '${this.config.provider}' does not support the embed operation.`,
+				501 // Not Implemented
+			);
+		}
+
+		// Options merging is handled within provider implementations for now
+		// Pass options directly
+		return this.provider.embed(texts, options);
+	}
+
+	/**
 	 * Create a new conversation
 	 */
 	createConversation(): Conversation {
@@ -122,7 +157,14 @@ export class LLMModule implements ConversationFactory {
 	 * Initialize the provider based on configuration
 	 */
 	private initializeProvider(): Provider {
-		const { provider, apiKey, endpoint, defaultModel, logger } = this.config;
+		const {
+			provider,
+			apiKey,
+			endpoint,
+			defaultModel,
+			embeddingModel,
+			logger,
+		} = this.config;
 
 		// Ensure logger is defined for providers
 		if (!logger) {
@@ -143,6 +185,7 @@ export class LLMModule implements ConversationFactory {
 				}
 				return new OpenAIProvider(apiKey, defaultModel, logger, {
 					endpoint,
+					embeddingModel,
 				});
 
 			case 'anthropic':
@@ -169,7 +212,9 @@ export class LLMModule implements ConversationFactory {
 						'defaultModel is required for Ollama provider'
 					);
 				}
-				return new OllamaProvider(endpoint, defaultModel, logger);
+				return new OllamaProvider(endpoint, defaultModel, logger, {
+					embeddingModel,
+				});
 
 			case 'ubc-llm-sandbox':
 				if (!apiKey) {
@@ -187,7 +232,13 @@ export class LLMModule implements ConversationFactory {
 						'defaultModel is required for UBC LLM Sandbox provider'
 					);
 				}
-				return new UbcLlmSandboxProvider(apiKey, endpoint, defaultModel, logger);
+				return new UbcLlmSandboxProvider(
+					apiKey,
+					endpoint,
+					defaultModel,
+					logger,
+					{ embeddingModel }
+				);
 
 			default:
 				// Consider if we want a way to register custom providers?

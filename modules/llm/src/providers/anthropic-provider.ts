@@ -1,5 +1,11 @@
 import { Provider } from './provider-interface';
-import { LLMOptions, LLMResponse, Message } from '../types';
+import {
+	LLMOptions,
+	LLMResponse,
+	Message,
+	EmbeddingOptions,
+	EmbeddingResponse,
+} from '../types';
 import {
 	LoggerInterface,
 	APIError,
@@ -226,6 +232,19 @@ export class AnthropicProvider implements Provider {
 	}
 
 	// --- Helper Methods ---
+
+	/**
+	 * Generate embeddings (Not supported by Anthropic provider).
+	 * Throws an APIError indicating lack of support.
+	 */
+	async embed(
+		texts: string[],
+		options?: EmbeddingOptions
+	): Promise<EmbeddingResponse> {
+		const errorMessage = 'Embeddings are not supported by the Anthropic provider.';
+		this.logger.warn(errorMessage, { textsLength: texts.length, options });
+		throw new APIError(errorMessage, 501, { provider: 'anthropic' });
+	}
 
 	/**
 	 * Normalizes the response object from the Anthropic API (`Anthropic.Message`)

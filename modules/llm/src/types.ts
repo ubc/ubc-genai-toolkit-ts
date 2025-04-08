@@ -25,9 +25,14 @@ export interface LLMConfig extends ModuleConfig {
 	endpoint?: string;
 
 	/**
-	 * Default model to use
+	 * Default model to use for chat completion
 	 */
 	defaultModel: string;
+
+	/**
+	 * Default model to use for embeddings (optional)
+	 */
+	embeddingModel?: string;
 
 	/**
 	 * Default options for requests
@@ -120,6 +125,55 @@ export interface LLMResponse {
 
 	/**
 	 * Additional metadata
+	 */
+	metadata?: Record<string, any>;
+}
+
+/**
+ * Options specifically for embedding requests.
+ */
+export interface EmbeddingOptions {
+	/**
+	 * Model to use for embedding (overrides default embeddingModel)
+	 */
+	model?: string;
+
+	/**
+	 * Whether to truncate input text if it exceeds the model's maximum context length.
+	 * Defaults to false. Note: Currently primarily relevant for Ollama.
+	 */
+	truncate?: boolean;
+
+	/**
+	 * Provider-specific options (e.g., 'dimensions' for OpenAI v3 models)
+	 */
+	[key: string]: any;
+}
+
+/**
+ * Standardized response for embedding requests.
+ */
+export interface EmbeddingResponse {
+	/**
+	 * The generated embedding vectors.
+	 */
+	embeddings: number[][];
+
+	/**
+	 * The model that generated the embeddings.
+	 */
+	model: string;
+
+	/**
+	 * Token usage information (if available, e.g., from OpenAI).
+	 */
+	usage?: {
+		promptTokens?: number;
+		totalTokens?: number;
+	};
+
+	/**
+	 * Additional provider-specific metadata.
 	 */
 	metadata?: Record<string, any>;
 }

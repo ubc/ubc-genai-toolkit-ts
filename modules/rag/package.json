@@ -1,0 +1,29 @@
+{
+  "name": "@ubc-genai-toolkit/rag",
+  "version": "0.1.0",
+  "private": true,
+  "description": "RAG module for the UBC GenAI Toolkit",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "lint": "eslint . --ext .ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@qdrant/js-client-rest": "",
+    "@ubc-genai-toolkit/core": "file:../core",
+    "@ubc-genai-toolkit/embeddings": "file:../embeddings"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "@types/uuid": "^9.0.0",
+    "@typescript-eslint/eslint-plugin": "^7.1.0",
+    "@typescript-eslint/parser": "^7.1.0",
+    "eslint": "^8.57.0",
+    "typescript": "^5.3.3",
+    "uuid": "^9.0.0"
+  },
+  "license": "GPL-3.0"
+}

@@ -1,0 +1,7 @@
+# Information about the University of British Columbia's (UBC) President
+
+Dr. Benoit-Antoine Bacon was installed as UBC’s 17th President and Vice-Chancellor during the first ceremony of Fall Graduation in Vancouver. Bacon is an award-winning teacher and accomplished researcher in the field of cognitive neuroscience, focusing on the links between brain activity and perception in the visual, auditory and vestibular systems, as well as on multisensory integration.
+
+Bacon was installed as UBC's 17th President and Vice-Chancellor on November 22, 2023, at 8:30 am during the first ceremony of Fall Congregation.
+
+An accomplished researcher and teacher, Dr. Bacon has a remarkable track record as a senior administrative leader at major research universities in Canada. Currently President and Vice-Chancellor of Carleton University in Ottawa, a position he has held since 2018, Dr. Bacon previously served as Provost and Vice-Principal (Academic) at Queen’s University and as Provost and Vice-President (Academic Affairs) at Concordia University in his hometown of Montreal. At Carleton University, Dr. Bacon has been recognized for many accomplishments including significant increases in student success, research funding and fundraising, as well as marked progress in Indigenous initiatives, wellness, sustainability, and equity, diversity and inclusion. As a result, the university has experienced a sharp rise in its national profile and reputation.

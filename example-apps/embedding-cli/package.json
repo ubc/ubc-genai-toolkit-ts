@@ -1,0 +1,27 @@
+{
+  "name": "embedding-cli",
+  "version": "1.0.0",
+  "description": "Example CLI application for UBC GenAI Toolkit Embeddings Module",
+  "private": true,
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc && node dist/index.js",
+    "clean": "rm -rf dist",
+    "lint": "eslint . --ext .ts"
+  },
+  "dependencies": {
+    "@ubc-genai-toolkit/core": "file:../../modules/core",
+    "@ubc-genai-toolkit/embeddings": "file:../../modules/embeddings",
+    "@ubc-genai-toolkit/llm": "file:../../modules/llm",
+    "dotenv": "^16.4.7",
+    "readline-sync": "^1.4.10"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.13",
+    "@types/readline-sync": "^1.4.8",
+    "typescript": "^5.8.2"
+  },
+  "license": "GPL-3.0"
+}

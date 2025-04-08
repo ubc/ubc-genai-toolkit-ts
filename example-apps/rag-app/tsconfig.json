@@ -1,0 +1,12 @@
+{
+	"extends": "../../tsconfig.base.json", // Assuming a base config exists at the root
+	"compilerOptions": {
+		"outDir": "./dist",
+		"rootDir": "./src",
+		"composite": true,
+		"esModuleInterop": true, // Required for packages like readline-sync
+		"resolveJsonModule": true // If needed for reading JSON data
+	},
+	"include": ["src/**/*"],
+	"exclude": ["node_modules", "dist"]
+}

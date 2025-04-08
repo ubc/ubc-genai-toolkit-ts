@@ -14,3 +14,6 @@ package-lock.json
 
 # No dist files
 **/dist/
+
+# No Qdrant files
+qdrant_storage/

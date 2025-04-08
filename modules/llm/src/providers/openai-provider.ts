@@ -1,6 +1,12 @@
 import OpenAI from 'openai';
 import { Provider } from './provider-interface';
-import { LLMOptions, LLMResponse, Message } from '../types';
+import {
+	LLMOptions,
+	LLMResponse,
+	Message,
+	EmbeddingOptions,
+	EmbeddingResponse,
+} from '../types';
 import { LoggerInterface } from '@ubc-genai-toolkit/core';
 import { APIError } from '@ubc-genai-toolkit/core';
 
@@ -8,18 +14,23 @@ export class OpenAIProvider implements Provider {
 	private client: OpenAI;
 	private logger: LoggerInterface;
 	private defaultModel: string;
+	private embeddingModel?: string;
 
 	constructor(
 		apiKey: string,
 		defaultModel: string,
 		logger: LoggerInterface,
-		options?: { endpoint?: string }
+		options?: {
+			endpoint?: string;
+			embeddingModel?: string;
+		}
 	) {
 		this.client = new OpenAI({
 			apiKey,
 			...(options?.endpoint ? { baseURL: options.endpoint } : {}),
 		});
 		this.defaultModel = defaultModel;
+		this.embeddingModel = options?.embeddingModel;
 		this.logger = logger;
 	}
 
@@ -124,6 +135,30 @@ export class OpenAIProvider implements Provider {
 		}
 	}
 
+	async embed(
+		texts: string[],
+		options?: EmbeddingOptions
+	): Promise<EmbeddingResponse> {
+		try {
+			const model = options?.model || this.embeddingModel || 'text-embedding-3-small';
+
+			// Extract provider-specific options (like dimensions)
+			const { truncate, ...providerOptions } = options || {};
+			delete providerOptions.model; // Don't pass our internal model option directly
+
+			const response = await this.client.embeddings.create({
+				model: model,
+				input: texts,
+				...providerOptions, // Pass any remaining options (like dimensions)
+			});
+
+			return this.normalizeEmbeddingResponse(response);
+		} catch (error) {
+			this.logger.error('Error calling OpenAI Embeddings API', { error });
+			throw this.handleError(error);
+		}
+	}
+
 	private normalizeResponse(
 		response: OpenAI.Chat.Completions.ChatCompletion
 	): LLMResponse {
@@ -139,6 +174,22 @@ export class OpenAIProvider implements Provider {
 				provider: 'openai',
 				id: response.id,
 				created: response.created,
+			},
+		};
+	}
+
+	private normalizeEmbeddingResponse(
+		response: OpenAI.Embeddings.CreateEmbeddingResponse
+	): EmbeddingResponse {
+		return {
+			embeddings: response.data.map((item) => item.embedding),
+			model: response.model,
+			usage: {
+				promptTokens: response.usage?.prompt_tokens,
+				totalTokens: response.usage?.total_tokens,
+			},
+			metadata: {
+				provider: 'openai',
 			},
 		};
 	}
