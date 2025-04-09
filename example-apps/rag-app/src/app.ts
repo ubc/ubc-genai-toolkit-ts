@@ -89,8 +89,9 @@ export class RAGApp {
 					const content = fs.readFileSync(filePath, 'utf-8');
 					this.logger.info(`Indexing document: ${file} (Length: ${content.length})`);
 					// Add document with filename as metadata
-					await this.rag.addDocument(content, { source: file });
-					this.logger.info(`Successfully indexed: ${file}`);
+					// The method now returns the IDs of the added chunks, but we don't need them here.
+					const addedChunkIds = await this.rag.addDocument(content, { source: file });
+					this.logger.info(`Successfully indexed: ${file} (Chunks added: ${addedChunkIds.length})`);
 				} catch (fileError) {
 					this.logger.error(`Failed to read or index file: ${file}`, { error: fileError });
 					// Continue to next file

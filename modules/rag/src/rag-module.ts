@@ -12,8 +12,8 @@ import { QdrantProvider } from './providers/qdrant-provider';
 export class RAGModule implements RAGModuleInterface {
 	private config: RAGConfig;
 	private logger: LoggerInterface;
-	private embeddingsModule!: EmbeddingsModule; // Definite assignment in create
-	private ragProvider!: RAGProviderInterface; // Definite assignment in create
+	private embeddingsModule!: EmbeddingsModule;
+	private ragProvider!: RAGProviderInterface;
 	private isInitialized = false;
 
 	// Private constructor to enforce initialization via static create method
@@ -66,8 +66,6 @@ export class RAGModule implements RAGModuleInterface {
 				'embeddingsConfig must be provided to handle internal embedding generation.'
 			);
 		}
-
-		// Add more validation as needed for other providers
 
 		return {
 			...config,
@@ -149,7 +147,7 @@ export class RAGModule implements RAGModuleInterface {
 	/**
 	 * Adds a document to the configured vector store.
 	 */
-	async addDocument(content: string, metadata?: Record<string, any>): Promise<void> {
+	async addDocument(content: string, metadata?: Record<string, any>): Promise<string[]> {
 		this.ensureInitialized();
 		this.logger.debug('Adding document...', { metadata });
 		// Delegate to the provider, which handles chunking and embedding
@@ -177,5 +175,34 @@ export class RAGModule implements RAGModuleInterface {
 		const results = await this.ragProvider.retrieveContext(queryText, finalOptions);
 		this.logger.debug(`Retrieved ${results.length} context chunks.`);
 		return results;
+	}
+
+	/**
+	 * Deletes specific chunks from the vector store by their IDs.
+	 */
+	async deleteDocumentsByIds(ids: string[]): Promise<void> {
+		this.ensureInitialized();
+		this.logger.debug(`Deleting documents by IDs: ${ids.join(', ')}`);
+		return this.ragProvider.deleteDocumentsByIds(ids);
+	}
+
+	/**
+	 * Deletes chunks from the vector store that match the provided metadata filter.
+	 */
+	async deleteDocumentsByMetadata(filter: Record<string, any>): Promise<void> {
+		this.ensureInitialized();
+		this.logger.debug('Deleting documents by metadata filter:', { filter });
+		return this.ragProvider.deleteDocumentsByMetadata(filter);
+	}
+
+	/**
+	 * Deletes the entire underlying storage container (e.g., collection, index)
+	 * associated with this RAG module's configuration.
+	 * Use with caution.
+	 */
+	async deleteStorage(): Promise<void> {
+		this.ensureInitialized();
+		this.logger.warn('Attempting to delete the underlying storage for this RAG module instance.');
+		return this.ragProvider.deleteStorage();
 	}
 }

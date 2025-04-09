@@ -6,9 +6,11 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -b",
-    "start": "node dist/index.js",
+    "start": "node dist/clear-storage.js && node dist/index.js",
+    "dev": "ts-node src/clear-storage.ts && ts-node src/index.ts",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
-    "lint": "eslint . --ext .ts"
+    "lint": "eslint . --ext .ts",
+    "clear-storage": "ts-node src/clear-storage.ts"
   },
   "dependencies": {
     "@ubc-genai-toolkit/core": "file:../../modules/core",
@@ -21,6 +23,7 @@
     "@types/node": "^20.11.19",
     "@types/readline-sync": "^1.4.8",
     "eslint": "^8.57.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5.8.2"
   }
 }

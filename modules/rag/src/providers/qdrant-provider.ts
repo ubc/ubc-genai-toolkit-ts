@@ -85,7 +85,7 @@ export class QdrantProvider implements RAGProviderInterface {
 		}
 	}
 
-	async addDocument(content: string, metadata: Record<string, any> = {}): Promise<void> {
+	async addDocument(content: string, metadata: Record<string, any> = {}): Promise<string[]> {
 		this.logger.debug(`Adding document with metadata:`, metadata);
 		// 1. Chunk the document
 		const chunks = simpleChunker(content); // Using simple chunker for now
@@ -93,12 +93,14 @@ export class QdrantProvider implements RAGProviderInterface {
 
 		if (chunks.length === 0) {
 			this.logger.warn('Document content resulted in zero chunks. Nothing to add.');
-			return;
+			return []; // Return empty array
 		}
 
 		// 2. Get embeddings for chunks (one by one)
 		this.logger.debug(`Generating embeddings for ${chunks.length} chunks...`);
 		const points: QdrantSchemas['PointStruct'][] = [];
+		const addedChunkIds: string[] = []; // Array to store generated IDs
+
 		for (let i = 0; i < chunks.length; i++) {
 			const chunk = chunks[i];
 			try {
@@ -106,8 +108,11 @@ export class QdrantProvider implements RAGProviderInterface {
 				if (!embedding) {
 					throw new Error(`EmbeddingsModule.embed returned no result for chunk ${i}`);
 				}
+				const chunkId = uuidv4(); // Generate unique ID for each chunk
+				addedChunkIds.push(chunkId); // Store the ID
+
 				points.push({
-					id: uuidv4(), // Generate unique ID for each chunk
+					id: chunkId, // Use the generated ID
 					vector: embedding,
 					payload: {
 						...metadata, // Include original document metadata
@@ -135,6 +140,7 @@ export class QdrantProvider implements RAGProviderInterface {
 				points: points,
 			});
 			this.logger.info(`Successfully upserted ${points.length} points.`);
+			return addedChunkIds; // Return the array of added chunk IDs
 		} catch (error) {
 			this.logger.error('Error upserting points to Qdrant:', { error });
 			throw new Error(`Qdrant upsert failed: ${error instanceof Error ? error.message : String(error)}`);
@@ -181,6 +187,75 @@ export class QdrantProvider implements RAGProviderInterface {
 		} catch (error) {
 			this.logger.error('Error searching Qdrant:', { error });
 			throw new Error(`Qdrant search failed: ${error instanceof Error ? error.message : String(error)}`);
+		}
+	}
+
+	async deleteDocumentsByIds(ids: string[]): Promise<void> {
+		if (!ids || ids.length === 0) {
+			this.logger.warn('No IDs provided for deletion.');
+			return;
+		}
+		this.logger.info(`Attempting to delete ${ids.length} documents by ID from collection '${this.config.collectionName}'.`);
+		try {
+			await this.client.delete(this.config.collectionName, {
+				points: ids,
+				wait: true, // Wait for operation to complete
+			});
+			this.logger.info(`Successfully deleted ${ids.length} documents by ID.`);
+		} catch (error) {
+			this.logger.error(`Error deleting documents by ID from Qdrant collection '${this.config.collectionName}':`, { error });
+			throw new Error(`Qdrant deletion by ID failed: ${error instanceof Error ? error.message : String(error)}`);
+		}
+	}
+
+	async deleteDocumentsByMetadata(filter: Record<string, any>): Promise<void> {
+		if (!filter || Object.keys(filter).length === 0) {
+			this.logger.warn('No filter provided for deletion by metadata.');
+			return;
+		}
+		this.logger.info(`Attempting to delete documents matching filter from collection '${this.config.collectionName}':`, { filter });
+
+		// Convert simple key-value filter to Qdrant filter structure
+		// This assumes a logical AND ('must') for all conditions
+		const qdrantFilter: QdrantSchemas['Filter'] = {
+			must: Object.entries(filter).map(([key, value]) => ({
+				key: key,
+				match: {
+					// Qdrant 'match' works for keyword, integer, bool.
+					// Might need refinement for text matching or other types.
+					value: value,
+				},
+			})),
+		};
+
+		try {
+			await this.client.delete(this.config.collectionName, {
+				filter: qdrantFilter,
+				wait: true, // Wait for operation to complete
+			});
+			this.logger.info(`Successfully submitted deletion request for documents matching filter.`);
+			// Note: Qdrant deletion by filter is async internally, 'wait:true' ensures the operation is queued.
+			// We don't get a direct count of deleted items here.
+		} catch (error) {
+			this.logger.error(`Error deleting documents by metadata filter from Qdrant collection '${this.config.collectionName}':`, { error });
+			throw new Error(`Qdrant deletion by filter failed: ${error instanceof Error ? error.message : String(error)}`);
+		}
+	}
+
+	async deleteStorage(): Promise<void> {
+		this.logger.warn(`Attempting to delete entire Qdrant collection '${this.config.collectionName}'. This is a destructive operation.`);
+		try {
+			const result = await this.client.deleteCollection(this.config.collectionName);
+			if (result) {
+				this.logger.info(`Successfully deleted Qdrant collection '${this.config.collectionName}'.`);
+			} else {
+				// This might indicate the collection didn't exist or another issue prevented deletion.
+				this.logger.warn(`Deletion command for collection '${this.config.collectionName}' completed, but result was 'false'. The collection might not have existed.`);
+			}
+		} catch (error) {
+			this.logger.error(`Error deleting Qdrant collection '${this.config.collectionName}':`, { error });
+			// Handle potential specific error types if needed (e.g., collection not found could be logged differently)
+			throw new Error(`Qdrant collection deletion failed: ${error instanceof Error ? error.message : String(error)}`);
 		}
 	}
 }

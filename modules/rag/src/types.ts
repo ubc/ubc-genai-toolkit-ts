@@ -84,8 +84,9 @@ export interface RAGProviderInterface {
 	 * The provider is responsible for chunking and embedding the content.
 	 * @param content The text content of the document.
 	 * @param metadata Optional metadata to associate with the document/chunks.
+	 * @returns A promise resolving to an array of chunk IDs that were added.
 	 */
-	addDocument(content: string, metadata?: Record<string, any>): Promise<void>;
+	addDocument(content: string, metadata?: Record<string, any>): Promise<string[]>;
 	/**
 	 * Retrieves relevant context chunks based on a query.
 	 * @param queryText The user's query text.
@@ -93,6 +94,24 @@ export interface RAGProviderInterface {
 	 * @returns A promise resolving to an array of retrieved chunks.
 	 */
 	retrieveContext(queryText: string, options?: RetrievalOptions): Promise<RetrievedChunk[]>;
+	/**
+	 * Deletes specific chunks from the vector store by their IDs.
+	 * @param ids An array of chunk IDs to delete.
+	 */
+	deleteDocumentsByIds(ids: string[]): Promise<void>;
+	/**
+	 * Deletes chunks from the vector store that match the provided metadata filter.
+	 * @param filter A metadata filter object. The exact structure and interpretation
+	 *               depend on the provider implementation. For simple cases, it might
+	 *               be a key-value map where chunks matching all key-value pairs are deleted.
+	 */
+	deleteDocumentsByMetadata(filter: Record<string, any>): Promise<void>;
+	/**
+	 * Deletes the entire underlying storage container (e.g., collection, index)
+	 * associated with this provider instance configuration.
+	 * This is a destructive operation.
+	 */
+	deleteStorage(): Promise<void>;
 }
 
 /**
@@ -104,8 +123,9 @@ export interface RAGModuleInterface {
 	 * Handles chunking and embedding internally.
 	 * @param content The text content of the document.
 	 * @param metadata Optional metadata.
+	 * @returns A promise resolving to an array of chunk IDs that were added.
 	 */
-	addDocument(content: string, metadata?: Record<string, any>): Promise<void>;
+	addDocument(content: string, metadata?: Record<string, any>): Promise<string[]>;
 	/**
 	 * Retrieves relevant context chunks for a given query text.
 	 * @param queryText The user's query.
@@ -113,4 +133,20 @@ export interface RAGModuleInterface {
 	 * @returns A promise resolving to an array of relevant text chunks.
 	 */
 	retrieveContext(queryText: string, options?: RetrievalOptions): Promise<RetrievedChunk[]>;
+	/**
+	 * Deletes specific chunks from the vector store by their IDs.
+	 * @param ids An array of chunk IDs to delete.
+	 */
+	deleteDocumentsByIds(ids: string[]): Promise<void>;
+	/**
+	 * Deletes chunks from the vector store that match the provided metadata filter.
+	 * @param filter A metadata filter object. Provider-specific interpretation applies.
+	 */
+	deleteDocumentsByMetadata(filter: Record<string, any>): Promise<void>;
+	/**
+	 * Deletes the entire underlying storage container (e.g., collection, index)
+	 * associated with this RAG module's configuration.
+	 * Use with caution.
+	 */
+	deleteStorage(): Promise<void>;
 }
