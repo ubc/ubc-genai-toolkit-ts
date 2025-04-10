@@ -1,0 +1,1 @@
+{"root":["./src/chunking-module.ts","./src/index.ts","./src/types.ts","./src/providers/provider-interface.ts","./src/providers/recursive-character-provider.ts","./src/providers/simple-provider.ts","./src/providers/token-provider.ts","./src/utils/simple-chunker.ts"],"version":"5.8.2"}

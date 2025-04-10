@@ -1,0 +1,20 @@
+{
+  "name": "@ubc-genai-toolkit/chunking-cli",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Example CLI application demonstrating the @ubc-genai-toolkit/chunking module.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@ubc-genai-toolkit/chunking": "file:../../modules/chunking",
+    "@ubc-genai-toolkit/core": "file:../../modules/core",
+    "dotenv": "^16.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
