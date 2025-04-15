@@ -217,21 +217,27 @@ export class QdrantProvider implements RAGProviderInterface {
 
 		// Convert simple key-value filter to Qdrant filter structure
 		// This assumes a logical AND ('must') for all conditions
-		const qdrantFilter: QdrantSchemas['Filter'] = {
-			must: Object.entries(filter).map(([key, value]) => ({
+		const conditions: QdrantSchemas['Condition'][] = Object.entries(filter).map(
+			([key, value]) => ({
 				key: key,
 				match: {
 					// Qdrant 'match' works for keyword, integer, bool.
 					// Might need refinement for text matching or other types.
 					value: value,
 				},
-			})),
-		};
+			})
+		);
+
+		// Create the filter object, using type assertion to bypass strict check
+		const qdrantFilter = {
+			must: conditions,
+		} as any as QdrantSchemas['Filter']; // Assert type
 
 		try {
+			// Pass the asserted filter object
 			await this.client.delete(this.config.collectionName, {
 				filter: qdrantFilter,
-				wait: true, // Wait for operation to complete
+				wait: true,
 			});
 			this.logger.info(`Successfully submitted deletion request for documents matching filter.`);
 			// Note: Qdrant deletion by filter is async internally, 'wait:true' ensures the operation is queued.

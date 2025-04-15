@@ -1,0 +1,24 @@
+{
+  "name": "@ubc-genai-toolkit/document-parsing",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo"
+  },
+  "dependencies": {
+    "@opendocsg/pdf2md": "^0.2.1",
+    "@ubc-genai-toolkit/core": "file:../core",
+    "file-type": "^20.4.1",
+    "mammoth": "^1.9.0",
+    "markdown-to-text": "^0.1.1",
+    "turndown": "^7.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "@types/turndown": "^5.0.5",
+    "typescript": "^5.8.3"
+  }
+}

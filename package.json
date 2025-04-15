@@ -7,14 +7,15 @@
     "example-apps/*"
   ],
   "scripts": {
-    "build": "npm run build --workspace=@ubc-genai-toolkit/core && npm run build --workspace=@ubc-genai-toolkit/llm && npm run build --workspace=@ubc-genai-toolkit/embeddings && npm run build --workspace=@ubc-genai-toolkit/rag && npm run build --workspace=@ubc-genai-toolkit/chunking && npm run build --workspace=llm-conversation && npm run build --workspace=embedding-cli && npm run build --workspace=rag-app && npm run build --workspace=@ubc-genai-toolkit/chunking-cli",
+    "build": "npm run build --workspace=@ubc-genai-toolkit/core && npm run build --workspace=@ubc-genai-toolkit/llm && npm run build --workspace=@ubc-genai-toolkit/embeddings && npm run build --workspace=@ubc-genai-toolkit/rag && npm run build --workspace=@ubc-genai-toolkit/chunking && npm run build --workspace=@ubc-genai-toolkit/document-parsing && npm run build --workspace=llm-conversation && npm run build --workspace=embedding-cli && npm run build --workspace=rag-app && npm run build --workspace=@ubc-genai-toolkit/chunking-cli && npm run build --workspace=document-parsing-cli",
     "test": "npm run test --workspaces",
     "lint": "npm run lint --workspaces",
-    "clean": "npm run clean --workspace=@ubc-genai-toolkit/core && npm run clean --workspace=@ubc-genai-toolkit/llm && npm run clean --workspace=@ubc-genai-toolkit/embeddings && npm run clean --workspace=@ubc-genai-toolkit/rag && npm run clean --workspace=@ubc-genai-toolkit/chunking && npm run clean --workspace=llm-conversation && npm run clean --workspace=embedding-cli && npm run clean --workspace=rag-app && npm run clean --workspace=@ubc-genai-toolkit/chunking-cli",
+    "clean": "npm run clean --workspace=@ubc-genai-toolkit/core && npm run clean --workspace=@ubc-genai-toolkit/llm && npm run clean --workspace=@ubc-genai-toolkit/embeddings && npm run clean --workspace=@ubc-genai-toolkit/rag && npm run clean --workspace=@ubc-genai-toolkit/chunking && npm run clean --workspace=@ubc-genai-toolkit/document-parsing && npm run clean --workspace=llm-conversation && npm run clean --workspace=embedding-cli && npm run clean --workspace=rag-app && npm run clean --workspace=@ubc-genai-toolkit/chunking-cli && npm run clean --workspace=document-parsing-cli",
     "start:llm-convo": "npm run start --workspace=llm-conversation",
     "start:embedding-cli": "npm run start --workspace=embedding-cli",
     "start:rag-app": "npm run start --workspace=rag-app",
-    "start:chunking-cli": "npm run start --workspace=@ubc-genai-toolkit/chunking-cli"
+    "start:chunking-cli": "npm run start --workspace=@ubc-genai-toolkit/chunking-cli",
+    "start:doc-parse-cli": "npm run start --workspace=document-parsing-cli"
   },
   "license": "GPL-3.0"
 }

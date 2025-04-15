@@ -1,0 +1,24 @@
+{
+  "name": "document-parsing-cli",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -b",
+    "start": "node dist/index.js",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "dev": "ts-node src/index.ts"
+  },
+  "dependencies": {
+    "@ubc-genai-toolkit/core": "file:../../modules/core",
+    "@ubc-genai-toolkit/document-parsing": "file:../../modules/document-parsing",
+    "dotenv": "^16.4.5",
+    "readline-sync": "^1.4.10"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.13",
+    "@types/readline-sync": "^1.4.8",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
+  }
+}

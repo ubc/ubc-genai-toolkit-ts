@@ -1,0 +1,15 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"outDir": "./dist",
+		"rootDir": "./src"
+		// No composite flag needed for example apps unless they are built upon by others
+	},
+	"include": ["src/**/*"],
+	"exclude": ["node_modules", "dist"],
+	// Reference the modules it depends on for build order and type checking
+	"references": [
+		{ "path": "../../modules/core" },
+		{ "path": "../../modules/document-parsing" }
+	]
+}
