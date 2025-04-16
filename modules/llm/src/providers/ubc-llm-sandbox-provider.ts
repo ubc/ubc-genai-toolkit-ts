@@ -72,7 +72,7 @@ export class UbcLlmSandboxProvider implements Provider {
 		endpoint: string, // Endpoint is mandatory for this provider
 		defaultModel: string,
 		logger: LoggerInterface,
-		options?: { embeddingModel?: string } // Added
+		options?: { embeddingModel?: string }
 	) {
 		if (!endpoint) {
 			throw new APIError(
@@ -86,19 +86,19 @@ export class UbcLlmSandboxProvider implements Provider {
 		});
 		this.endpoint = endpoint;
 		this.defaultModel = defaultModel;
-		this.embeddingModel = options?.embeddingModel; // Added
+		this.embeddingModel = options?.embeddingModel;
 		this.logger = logger;
 		this.logger.debug('UbcLlmSandboxProvider initialized', {
 			endpoint,
 			defaultModel,
-			embeddingModel: this.embeddingModel, // Added
+			embeddingModel: this.embeddingModel,
 		});
 	}
 
 	/**
 	 * Gets the unique identifier name for this provider.
 	 *
-	 * @returns {string} The ثابت name 'ubc-llm-sandbox'.
+	 * @returns {string} The name 'ubc-llm-sandbox'.
 	 */
 	getName(): string {
 		return 'ubc-llm-sandbox';
